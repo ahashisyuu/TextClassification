@@ -63,7 +63,7 @@ if __name__ == '__main__':
     train_label = train_label.apply(lambda x: int(x)-1)
 
     onehot_encoder = OneHotEncoder(sparse=False)
-    label = onehot_encoder.fit_transform(train_label.reshape(-1, 1))
+    label = onehot_encoder.fit_transform(train_label.values.reshape(-1, 1))
 
     with open('data_preprocessed/data_train_keras.pkl', 'wb') as fw_train, \
             open('data_preprocessed/data_test_keras.pkl', 'wb') as fw_test:

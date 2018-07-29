@@ -16,4 +16,6 @@ TCZoo
             open('data_preprocessed/data_test_keras.pkl', 'rb') as fw_test:
         train_text, label = pkl.load(fw_train)
         test_text = pkl.load(fw_test)
+
+## **a02_TextCNN已经可以运行**
   

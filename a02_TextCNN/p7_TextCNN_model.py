@@ -11,17 +11,17 @@ class TextCNN:
         # set hyperparamter
         self.num_classes = num_classes
         self.batch_size = batch_size
-        self.sequence_length=sequence_length
-        self.vocab_size=vocab_size
-        self.embed_size=embed_size
-        self.is_training=is_training
+        self.sequence_length = sequence_length
+        self.vocab_size = vocab_size
+        self.embed_size = embed_size
+        self.is_training = is_training
         self.learning_rate = tf.Variable(learning_rate, trainable=False, name="learning_rate")#ADD learning_rate
         self.learning_rate_decay_half_op = tf.assign(self.learning_rate, self.learning_rate * decay_rate_big)
-        self.filter_sizes=filter_sizes # it is a list of int. e.g. [3,4,5]
-        self.num_filters=num_filters
-        self.initializer=initializer
-        self.num_filters_total=self.num_filters * len(filter_sizes) #how many filters totally.
-        self.multi_label_flag=multi_label_flag
+        self.filter_sizes = filter_sizes  # it is a list of int. e.g. [3,4,5]
+        self.num_filters = num_filters
+        self.initializer = initializer
+        self.num_filters_total = self.num_filters * len(filter_sizes)  # how many filters totally.
+        self.multi_label_flag = multi_label_flag
         self.clip_gradients = clip_gradients
 
         # add placeholder (X,label)
@@ -30,7 +30,7 @@ class TextCNN:
         self.input_y_multilabel = tf.placeholder(tf.float32,[None,self.num_classes], name="input_y_multilabel")  # y:[None,num_classes]. this is for multi-label classification only.
         self.dropout_keep_prob=tf.placeholder(tf.float32,name="dropout_keep_prob")
         self.iter = tf.placeholder(tf.int32)  # training iteration
-        self.tst=tf.placeholder(tf.bool)
+        self.tst = tf.placeholder(tf.bool)
 
         self.global_step = tf.Variable(0, trainable=False, name="Global_Step")
         self.epoch_step=tf.Variable(0,trainable=False,name="Epoch_Step")
@@ -80,7 +80,7 @@ class TextCNN:
                 #1)each filter with conv2d's output a shape:[1,sequence_length-filter_size+1,1,1];2)*num_filters--->[1,sequence_length-filter_size+1,1,num_filters];3)*batch_size--->[batch_size,sequence_length-filter_size+1,1,num_filters]
                 #input data format:NHWC:[batch, height, width, channels];output:4-D
                 conv=tf.nn.conv2d(self.sentence_embeddings_expanded, filter, strides=[1,1,1,1], padding="VALID",name="conv") #shape:[batch_size,sequence_length - filter_size + 1,1,num_filters]
-                conv,self.update_ema=self.batchnorm(conv,self.tst, self.iter, self.b1)
+                conv,self.update_ema=self.batchnorm(conv, self.tst, self.iter, self.b1)
                 # ====>c. apply nolinearity
                 b=tf.get_variable("b-%s"%filter_size,[self.num_filters]) #ADD 2017-06-09
                 h=tf.nn.relu(tf.nn.bias_add(conv,b),"relu") #shape:[batch_size,sequence_length - filter_size + 1,1,num_filters]. tf.nn.bias_add:adds `bias` to `value`
@@ -93,19 +93,19 @@ class TextCNN:
         #e.g. >>> x1=tf.ones([3,3]);x2=tf.ones([3,3]);x=[x1,x2]
         #         x12_0=tf.concat(x,0)---->x12_0' shape:[6,3]
         #         x12_1=tf.concat(x,1)---->x12_1' shape;[3,6]
-        self.h_pool=tf.concat(pooled_outputs,3) #shape:[batch_size, 1, 1, num_filters_total]. tf.concat=>concatenates tensors along one dimension.where num_filters_total=num_filters_1+num_filters_2+num_filters_3
-        self.h_pool_flat=tf.reshape(self.h_pool,[-1,self.num_filters_total]) #shape should be:[None,num_filters_total]. here this operation has some result as tf.sequeeze().e.g. x's shape:[3,3];tf.reshape(-1,x) & (3, 3)---->(1,9)
+        self.h_pool = tf.concat(pooled_outputs, 3) #shape:[batch_size, 1, 1, num_filters_total]. tf.concat=>concatenates tensors along one dimension.where num_filters_total=num_filters_1+num_filters_2+num_filters_3
+        self.h_pool_flat = tf.reshape(self.h_pool,[-1,self.num_filters_total]) #shape should be:[None,num_filters_total]. here this operation has some result as tf.sequeeze().e.g. x's shape:[3,3];tf.reshape(-1,x) & (3, 3)---->(1,9)
 
         #4.=====>add dropout: use tf.nn.dropout
         with tf.name_scope("dropout"):
-            self.h_drop=tf.nn.dropout(self.h_pool_flat,keep_prob=self.dropout_keep_prob) #[None,num_filters_total]
-        self.h_drop=tf.layers.dense(self.h_drop,self.num_filters_total,activation=tf.nn.tanh,use_bias=True)
+            self.h_drop = tf.nn.dropout(self.h_pool_flat,keep_prob=self.dropout_keep_prob) #[None,num_filters_total]
+        self.h_drop = tf.layers.dense(self.h_drop,self.num_filters_total,activation=tf.nn.tanh,use_bias=True)
         #5. logits(use linear layer)and predictions(argmax)
         with tf.name_scope("output"):
             logits = tf.matmul(self.h_drop,self.W_projection) + self.b_projection  #shape:[None, self.num_classes]==tf.matmul([None,self.embed_size],[self.embed_size,self.num_classes])
         return logits
 
-    def batchnorm(self,Ylogits, is_test, iteration, offset, convolutional=False): #check:https://github.com/martin-gorner/tensorflow-mnist-tutorial/blob/master/mnist_4.1_batchnorm_five_layers_relu.py#L89
+    def batchnorm(self, Ylogits, is_test, iteration, offset, convolutional=False): #check:https://github.com/martin-gorner/tensorflow-mnist-tutorial/blob/master/mnist_4.1_batchnorm_five_layers_relu.py#L89
         """
         batch normalization: keep moving average of mean and variance. use it as value for BN when training. when prediction, use value from that batch.
         :param Ylogits:

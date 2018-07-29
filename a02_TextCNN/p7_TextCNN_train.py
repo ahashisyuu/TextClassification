@@ -80,8 +80,11 @@ def main(_):
                 iteration = iteration+1
                 if epoch == 0 and counter == 0:
                     print("trainX[start:end]:", trainX[start:end])
-                feed_dict = {textCNN.input_x: trainX[start:end], textCNN.dropout_keep_prob: 0.5,textCNN.iter: iteration,textCNN.tst: not FLAGS.is_training}
-                feed_dict[textCNN.input_y_multilabel]=trainY[start:end]
+                feed_dict = {textCNN.input_x: trainX[start:end],
+                             textCNN.dropout_keep_prob: 0.5,
+                             textCNN.iter: iteration,
+                             textCNN.tst: not FLAGS.is_training,
+                             textCNN.input_y_multilabel: trainY[start:end]}
                 curr_loss, lr, _, _ = sess.run([textCNN.loss_val,textCNN.learning_rate,textCNN.update_ema,textCNN.train_op],feed_dict)
                 loss,counter = loss+curr_loss,counter+1
                 if counter % 50 == 0:

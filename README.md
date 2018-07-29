@@ -10,4 +10,10 @@ TCZoo
 **max_len**代表每篇文章最大长度，由于在总数据集上统计发现长度不大于1980的文章总数就有98%，因此取最大长度为2000
 
 **label**已经one-hot化，可以直接进行分类，总类别数为19
+
+## 数据加载代码
+    with open('data_preprocessed/data_train_keras.pkl', 'rb') as fw_train, \
+            open('data_preprocessed/data_test_keras.pkl', 'rb') as fw_test:
+        train_text, label = pkl.dump(fw_train)
+        test_text = pkl.dump(fw_test)
   

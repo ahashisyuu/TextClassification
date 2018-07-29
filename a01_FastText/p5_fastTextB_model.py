@@ -4,6 +4,7 @@ print("started...")
 import tensorflow as tf
 import numpy as np
 
+
 class fastTextB:
     def __init__(self, label_size, learning_rate, batch_size, decay_steps, decay_rate,num_sampled,sentence_len,vocab_size,embed_size,is_training):
         """init all hyperparameter here"""
@@ -64,7 +65,7 @@ class fastTextB:
         if self.is_training: #training
             labels=tf.reshape(self.labels,[-1])               #[batch_size,1]------>[batch_size,]
             labels=tf.expand_dims(labels,1)                   #[batch_size,]----->[batch_size,1]
-            loss = tf.reduce_mean( #inputs: A `Tensor` of shape `[batch_size, dim]`.  The forward activations of the input network.
+            loss = tf.reduce_mean(  # inputs: A `Tensor` of shape `[batch_size, dim]`.  The forward activations of the input network.
                 tf.nn.nce_loss(weights=tf.transpose(self.W),  #[embed_size, label_size]--->[label_size,embed_size]. nce_weights:A `Tensor` of shape `[num_classes, dim].O.K.
                                biases=self.b,                 #[label_size]. nce_biases:A `Tensor` of shape `[num_classes]`.
                                labels=labels,                 #[batch_size,1]. train_labels, # A `Tensor` of type `int64` and shape `[batch_size,num_true]`. The target classes.

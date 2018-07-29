@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 #training the model.
 #process--->1.load data(X:list of lint,y:int). 2.create session. 3.feed data. 4.training (5.validation) ,(6.prediction)
-import sys
-reload(sys)
-sys.setdefaultencoding('utf8')
+# import sys
+# reload(sys)
+# sys.setdefaultencoding('utf8')
 import tensorflow as tf
 import numpy as np
-from p5_fastTextB_model import fastTextB as fastText
+from a01_FastText.p5_fastTextB_model import fastTextB as fastText
 from p4_zhihu_load_data import load_data,create_voabulary,create_voabulary_label
 from tflearn.data_utils import to_categorical, pad_sequences
 import os
@@ -14,21 +14,21 @@ import word2vec
 import pickle
 
 #configuration
-FLAGS=tf.app.flags.FLAGS
-tf.app.flags.DEFINE_integer("label_size",1999,"number of label")
-tf.app.flags.DEFINE_float("learning_rate",0.01,"learning rate")
-tf.app.flags.DEFINE_integer("batch_size", 128, "Batch size for training/evaluating.") #批处理的大小 32-->128
-tf.app.flags.DEFINE_integer("decay_steps", 20000, "how many steps before decay learning rate.") #批处理的大小 32-->128
-tf.app.flags.DEFINE_float("decay_rate", 0.8, "Rate of decay for learning rate.") #0.5一次衰减多少
-tf.app.flags.DEFINE_integer("num_sampled",50,"number of noise sampling") #100
-tf.app.flags.DEFINE_string("ckpt_dir","fast_text_checkpoint/","checkpoint location for the model")
-tf.app.flags.DEFINE_integer("sentence_len",200,"max sentence length")
-tf.app.flags.DEFINE_integer("embed_size",100,"embedding size")
-tf.app.flags.DEFINE_boolean("is_training",True,"is traning.true:tranining,false:testing/inference")
-tf.app.flags.DEFINE_integer("num_epochs",15,"embedding size")
-tf.app.flags.DEFINE_integer("validate_every", 1, "Validate every validate_every epochs.") #每10轮做一次验证
-tf.app.flags.DEFINE_boolean("use_embedding",True,"whether to use embedding or not.")
-tf.app.flags.DEFINE_string("cache_path","fast_text_checkpoint/data_cache.pik","checkpoint location for the model")
+FLAGS=tf.flags.FLAGS
+tf.flags.DEFINE_integer("label_size",1999,"number of label")
+tf.flags.DEFINE_float("learning_rate",0.01,"learning rate")
+tf.flags.DEFINE_integer("batch_size", 128, "Batch size for training/evaluating.") #批处理的大小 32-->128
+tf.flags.DEFINE_integer("decay_steps", 20000, "how many steps before decay learning rate.") #批处理的大小 32-->128
+tf.flags.DEFINE_float("decay_rate", 0.8, "Rate of decay for learning rate.") #0.5一次衰减多少
+tf.flags.DEFINE_integer("num_sampled",50,"number of noise sampling") #100
+tf.flags.DEFINE_string("ckpt_dir","fast_text_checkpoint/","checkpoint location for the model")
+tf.flags.DEFINE_integer("sentence_len",200,"max sentence length")
+tf.flags.DEFINE_integer("embed_size",100,"embedding size")
+tf.flags.DEFINE_boolean("is_training",True,"is traning.true:tranining,false:testing/inference")
+tf.flags.DEFINE_integer("num_epochs",15,"embedding size")
+tf.flags.DEFINE_integer("validate_every", 1, "Validate every validate_every epochs.") #每10轮做一次验证
+tf.flags.DEFINE_boolean("use_embedding",True,"whether to use embedding or not.")
+tf.flags.DEFINE_string("cache_path","fast_text_checkpoint/data_cache.pik","checkpoint location for the model")
 
 #1.load data(X:list of lint,y:int). 2.create session. 3.feed data. 4.training (5.validation) ,(6.prediction)
 def main(_):
@@ -61,7 +61,7 @@ def main(_):
         #with open(FLAGS.cache_path, 'w') as data_f: #save data to cache file, so we can use it next time quickly.
         #    pickle.dump((trainX,trainY,testX,testY,vocabulary_index2word),data_f)
         ###############################################################################################
-    print("testX[0]:", testX[0]) ;print("testX[1]:", testX[1]); #[17, 25, 10, 406, 26, 14, 56, 61, 62, 323, 4]
+    print("testX[0]:", testX[0]) ;print("testX[1]:", testX[1])  #[17, 25, 10, 406, 26, 14, 56, 61, 62, 323, 4]
     # Converting labels to binary vectors
     print("testY[0]:", testY[0])  # 0 ;print("testY[1]:",testY[1]) #0
     print("end padding & transform to one hot...")

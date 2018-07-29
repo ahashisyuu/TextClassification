@@ -26,10 +26,10 @@ class TextCNN:
 
         # add placeholder (X,label)
         self.input_x = tf.placeholder(tf.int32, [None, self.sequence_length], name="input_x")  # X
-        #self.input_y = tf.placeholder(tf.int32, [None,],name="input_y")  # y:[None,num_classes]
+        # self.input_y = tf.placeholder(tf.int32, [None,],name="input_y")  # y:[None,num_classes]
         self.input_y_multilabel = tf.placeholder(tf.float32,[None,self.num_classes], name="input_y_multilabel")  # y:[None,num_classes]. this is for multi-label classification only.
         self.dropout_keep_prob=tf.placeholder(tf.float32,name="dropout_keep_prob")
-        self.iter = tf.placeholder(tf.int32) #training iteration
+        self.iter = tf.placeholder(tf.int32)  # training iteration
         self.tst=tf.placeholder(tf.bool)
 
         self.global_step = tf.Variable(0, trainable=False, name="Global_Step")
@@ -40,7 +40,7 @@ class TextCNN:
         self.decay_steps, self.decay_rate = decay_steps, decay_rate
 
         self.instantiate_weights()
-        self.logits = self.inference() #[None, self.label_size]. main computation graph is here.
+        self.logits = self.inference()  # [None, self.label_size]. main computation graph is here.
         self.possibility=tf.nn.sigmoid(self.logits)
         if not is_training:
             return

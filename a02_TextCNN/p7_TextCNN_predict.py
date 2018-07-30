@@ -75,7 +75,7 @@ def main(_):
         y_pre = np.concatenate(y_pre, axis=0)
 
         predictions = y_pre.argmax(axis=1)
-        pre_id = np.array([i+1 for i in range(predictions.shape[0])])
+        pre_id = np.array([i for i in range(predictions.shape[0])])
 
         data = np.concatenate([pre_id.reshape((-1, 1)),
                                (predictions+1).reshape((-1, 1))], axis=-1)

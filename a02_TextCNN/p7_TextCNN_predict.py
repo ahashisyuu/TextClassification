@@ -1,13 +1,10 @@
 import tensorflow as tf
 import numpy as np
+import pandas as pd
 import pickle as pkl
 from a02_TextCNN.p7_TextCNN_model import TextCNN
-# from a02_TextCNN.data_util import create_vocabulary,load_data_multilabel
-import os
-# import word2vec
 
-#configuration
-FLAGS=tf.flags.FLAGS
+FLAGS = tf.flags.FLAGS
 
 tf.flags.DEFINE_string("traning_data_path", "../data/sample_multiple_label.txt","path of traning data.") #sample_multiple_label.txt-->train_label_single100_merge
 tf.flags.DEFINE_integer("vocab_size", 323069, "maximum vocab size.")
@@ -35,7 +32,6 @@ def main(_):
             open('../data_preprocessed/data_test_keras.pkl', 'rb') as fw_test:
         trainX, trainY = pkl.load(fw_train)
         testX = pkl.load(fw_test)
-    # trainY = trainY.argmax(axis=-1)
 
     print("length of training data:", len(trainX), ";length of validation data:",len(testX))
     print("trainX[0]:", trainX[0])
@@ -65,6 +61,8 @@ def main(_):
         for start, end in zip(range(0, number_of_training_data, batch_size),
                               range(batch_size, number_of_training_data+batch_size, batch_size)):
             iteration = iteration + 1
+            if iteration % 50 == 0:
+                print(iteration)
             feed_dict = {textCNN.input_x: testX[start:end],
                          textCNN.dropout_keep_prob: 1, textCNN.iter: iteration,
                          textCNN.tst: not FLAGS.is_training}
@@ -77,6 +75,14 @@ def main(_):
         y_pre = np.concatenate(y_pre, axis=0)
 
         predictions = y_pre.argmax(axis=1)
+        pre_id = np.array([i+1 for i in range(predictions.shape[0])])
+
+        data = np.concatenate([pre_id.reshape((-1, 1)),
+                               (predictions+1).reshape((-1, 1))], axis=-1)
+        print(data.shape)
+        test_pre = pd.DataFrame(data, columns=['id', 'class'])
+        print(test_pre.head())
+        test_pre.to_csv('test.csv', index=False)
 
 
 if __name__ == "__main__":

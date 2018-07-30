@@ -27,7 +27,7 @@ def load_data_multilabel(traning_data_path,vocab_word2index, vocab_label2index,s
     label_size=len(vocab_label2index)
     X = []
     Y = []
-    for i,line in enumerate(lines):
+    for i, line in enumerate(lines):
         raw_list = line.strip().split("__label__")
         input_list = raw_list[0].strip().split(" ")
         input_list = [x.strip().replace(" ", "") for x in input_list if x != '']

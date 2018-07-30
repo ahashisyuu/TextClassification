@@ -18,4 +18,6 @@ TCZoo
         test_text = pkl.load(fw_test)
 
 ## **a02_TextCNN已经可以运行**
-  
+运行该工程下的p7_TextCNN_train.py文件即可 
+
+
